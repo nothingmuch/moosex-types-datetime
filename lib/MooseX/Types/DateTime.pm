@@ -14,12 +14,29 @@ use DateTime::TimeZone ();
 use Moose::Util::TypeConstraints;
 
 class_type "DateTime";
+class_type "DateTime::Duration";
 class_type "DateTime::TimeZone";
 class_type "DateTime::Locale::root" => { name => "DateTime::Locale" };
 
 coerce "DateTime" => (
-    from "Int",
+    from "Num",
     via { DateTime->from_epoch( epoch => $_ ) },
+    from "HashRef",
+    via { DateTime->new( %$_ ) },
+    Moose::Meta::TypeConstraint->new(
+        name => "__ANON__",
+        parent => find_type_constraint("Str"),
+        constraint => sub { $_ eq 'now' },
+        optimise_as => sub { no warnings 'uninitialized'; !ref($_[0]) and $_[0] eq 'now' },
+    ),
+    via { DateTime->now },
+);
+
+coerce "DateTime::Duration" => (
+    from "Num",
+    via { DateTime::Duration->new( seconds => $_ ) },
+    from "HashRef",
+    via { DateTime::Duration->new( %$_ ) },
 );
 
 coerce "DateTime::TimeZone" => (
@@ -68,19 +85,71 @@ designed to work with the L<DateTime> suite of objects.
 
 =item L<DateTime>
 
-A coercion from C<Int> using L<DateTime/from_epoch> is defined.
+A class type for L<DateTime>.
+
+=over 4
+
+=item from C<Num>
+
+Uses L<DateTime/from_epoch>. Floating values will be used for subsecond
+percision, see L<DateTime> for details.
+
+=item from C<HashRef>
+
+Calls L<DateTime/new> with the hash entries as arguments.
+
+=back
+
+=item L<DateTime::Duration>
+
+A class type for L<DateTime::Duration>
+
+=over 4
+
+=item from C<Num>
+
+Uses L<DateTime::Duration/new> and passes the number as the C<seconds> argument.
+
+Note that due to leap seconds, DST changes etc this may not do what you expect.
+For instance passing in C<86400> is not always equivalent to one day, although
+there are that many seconds in a day. See L<DateTime/"How Date Math is Done">
+for more details.
+
+=item from C<HashRef>
+
+Calls L<DateTime::Duration/new> with the hash entries as arguments.
+
+=back
 
 =item L<DateTime::Locale>
 
-Coerces from C<Str>, where the string is the language tag, e.g. C<en> etc. See
+A class type for L<DateTime::Locale::root> with the name L<DateTime::Locale>.
+
+=over 4
+
+=item from C<Str>
+
+The string is treated as a language tag (e.g. C<en> or C<he_IL>) and given to
 L<DateTime::Locale/load>.
+
+=item from L<Locale::Maktext>
+
+The C<Locale::Maketext/language_tag> attribute will be used with L<DateTime::Locale/load>.
 
 =item L<DateTime::TimeZone>
 
-Coerces from C<Str> where the string is any time zone name.
+A class type for L<DateTime::TimeZone>.
 
-The string may also be a number of special values (C<local>, C<floating>,
-offsets, etc). See L<DateTime::TimeZone/USAGE> for details.
+=over 4
+
+=item from C<Str>
+
+Treated as a time zone name or offset. See L<DateTime::TimeZone/USAGE> for more
+details on the allowed values.
+
+Delegates to L<DateTime::TimeZone/new> with the string as the C<name> argument.
+
+=back
 
 =head1 VERSION CONTROL
 

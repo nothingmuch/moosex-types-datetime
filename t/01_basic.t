@@ -32,7 +32,40 @@ isa_ok( find_type_constraint($_), "Moose::Meta::TypeConstraint" ) for qw(DateTim
 
     is( $coerced->epoch, $epoch, "epoch is correct" );
 
+    isa_ok( Foo->new( date => { year => 2000, month => 1, day => 1 } )->date, "DateTime" );
+
+    isa_ok( Foo->new( date => 'now' )->date, "DateTime" );
+
     throws_ok { Foo->new( date => "junk1!!" ) } qr/DateTime/, "constraint";
+}
+
+{
+    {
+        package Quxx;
+        use Moose;
+
+        has duration => (
+            isa => "DateTime::Duration",
+            is  => "rw",
+            coerce => 1,
+        );
+    }
+
+    my $coerced = Quxx->new( duration => 10 )->duration;
+
+    isa_ok( $coerced, "DateTime::Duration", "coerced from seconds" );
+
+    my $time = time;
+
+    my $now = DateTime->from_epoch( epoch => $time );
+
+    my $future = $now + $coerced;
+
+    is( $future->epoch, ( $time + 10 ), "coerced value" );
+
+    isa_ok( Quxx->new( duration => { minutes => 2 } )->duration, "DateTime::Duration", "coerced from hash" );
+
+    throws_ok { Quxx->new( duration => "ahdstkljhat" ) } qr/DateTime/, "constraint";
 }
 
 {
@@ -70,7 +103,7 @@ isa_ok( find_type_constraint($_), "Moose::Meta::TypeConstraint" ) for qw(DateTim
 
     my $loc = Gorch->new( loc => "he_IL" )->loc;
 
-    isa_ok( $loc, "DateTime::Locale::he" );
+    isa_ok( $loc, "DateTime::Locale::he", "coerced from string" );
 
     dies_ok { Gorch->new( loc => "not_a_place_or_a_locale" ) } "bad locale name";
 
