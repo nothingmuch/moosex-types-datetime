@@ -17,6 +17,8 @@ WriteMakefile(
         'DateTime::TimeZone' => 0,
         'Test::use::ok'      => 0,
         'Test::Exception'    => 0,
+		'MooseX::Types'      => '0.04',
+		'DateTimeX::Easy'    => '0.082',
     },
 );
 
