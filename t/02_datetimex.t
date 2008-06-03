@@ -3,7 +3,7 @@ use warnings;
 
 BEGIN {
 
-	use Test::More tests => 26;
+	use Test::More tests => 30;
 	use Test::Exception;
 	use DateTime;
 	
@@ -12,11 +12,13 @@ BEGIN {
 
 =head1 NAME
 
-String Coercion; Check that we can properly coerce a string.
+t/02_datetimex.t - Check that we can properly coerce a string.
 
 =head1 DESCRIPTION
 
-Make sure all the utility stuff works as expected
+Run some tests to make sure the the Duration and DateTime types continue to
+work exactly as from the L<MooseX::Types::DateTime> class, as well as perform
+the correct string to object coercions.
 
 =head1 TESTS
 
@@ -32,9 +34,10 @@ Create a L<Moose> class that is using the L<MooseX::Types::DateTimeX> types.
 	package MooseX::Types::DateTimeX::CoercionTest;
 	
 	use Moose;
-	use MooseX::Types::DateTimeX qw(DateTime);
+	use MooseX::Types::DateTimeX qw(DateTime Duration);
 	
 	has 'date' => (is=>'rw', isa=>DateTime, coerce=>1);
+	has 'duration' => (is=>'rw', isa=>Duration, coerce=>1);	
 }
 
 ok my $class = MooseX::Types::DateTimeX::CoercionTest->new
@@ -136,6 +139,25 @@ ok $class->date({year=>2000,month=>1,day=>10})
 	
 	is $class->date => '2000-01-10T00:00:00'
 	=> 'Got correct DateTime';
+	
+=head2 check duration
+
+make sure the Duration type constraint works as expected
+
+=cut
+
+ok $class->duration(100)
+=> 'got duration from integer';
+
+	is $class->duration->seconds, 100
+	=> 'got correct duration from integer';
+	
+
+ok $class->duration('1 minute')
+=> 'got duration from string';
+
+	is $class->duration->seconds, 60
+	=> 'got correct duration string';
 	
 	
 =head1 AUTHOR

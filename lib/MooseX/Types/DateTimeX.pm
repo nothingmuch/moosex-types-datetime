@@ -3,15 +3,17 @@ package MooseX::Types::DateTimeX;
 use strict;
 use warnings;
 
-our $VERSION = "0.02";
+our $VERSION = "0.03";
 our $AUTHORITY = 'cpan:JJNAPIORK';
 
 use DateTime;
+use DateTime::Duration;
 use DateTimeX::Easy; 
+use Time::Duration::Parse ();
 use MooseX::Types::DateTime;  
 use MooseX::Types::Moose qw/Num HashRef Str/;
-use MooseX::Types 
-  -declare => [qw( DateTime )];
+use MooseX::Types -declare => [qw( DateTime Duration)];
+
   
 =head1 NAME
 
@@ -71,13 +73,36 @@ coerce DateTime,
   via { DateTimeX::Easy->new($_, default_time_zone=>'UTC') };
 
 
+=head2 Duration
+
+Subtype of 'DateTime::Duration' that coerces from a string.  We use the module
+L<Time::Duration::Parse> to attempt this.
+
+=cut
+
+subtype Duration,
+  as 'DateTime::Duration'; ## From MooseX::Types::Duration
+
+coerce Duration,
+  from Num,
+  via { DateTime::Duration->new( seconds => $_ ) },
+  from HashRef,
+  via { DateTime::Duration->new( %$_ ) },
+  from Str,
+  via { 
+	DateTime::Duration->new( 
+		seconds => Time::Duration::Parse::parse_duration($_)
+	)}; 
+ 
+
 =head1 AUTHOR
 
 John Napiorkowski E<lt>jjn1056 at yahoo.comE<gt>
 
-=head1 COPYRIGHT
+=head1 LICENSE
 
-	Copyright (c) 2008 John Napiorkowski. All rights reserved
+	Copyright (c) 2008 John Napiorkowski.
+	
 	This program is free software; you can redistribute
 	it and/or modify it under the same terms as Perl itself.
 

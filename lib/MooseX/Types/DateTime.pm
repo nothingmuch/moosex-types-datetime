@@ -5,49 +5,63 @@ package MooseX::Types::DateTime;
 use strict;
 use warnings;
 
-our $VERSION = "0.01";
+our $VERSION = "0.03";
 
 use DateTime ();
 use DateTime::Locale ();
 use DateTime::TimeZone ();
 
-use Moose::Util::TypeConstraints;
+use MooseX::Types::Moose qw/Num HashRef Str/;
+use MooseX::Types
+    -declare => [qw( DateTime Duration TimeZone )];
 
 class_type "DateTime";
 class_type "DateTime::Duration";
 class_type "DateTime::TimeZone";
 class_type "DateTime::Locale::root" => { name => "DateTime::Locale" };
 
-coerce "DateTime" => (
-    from "Num",
-    via { DateTime->from_epoch( epoch => $_ ) },
-    from "HashRef",
-    via { DateTime->new( %$_ ) },
-    Moose::Meta::TypeConstraint->new(
-        name => "__ANON__",
-        parent => find_type_constraint("Str"),
-        constraint => sub { $_ eq 'now' },
-        optimise_as => sub { no warnings 'uninitialized'; !ref($_[0]) and $_[0] eq 'now' },
-    ),
-    via { DateTime->now },
-);
+subtype DateTime, as 'DateTime';
+subtype Duration, as 'DateTime::Duration';
+subtype TimeZone, as 'DateTime::TimeZone';
 
-coerce "DateTime::Duration" => (
-    from "Num",
-    via { DateTime::Duration->new( seconds => $_ ) },
-    from "HashRef",
-    via { DateTime::Duration->new( %$_ ) },
-);
 
-coerce "DateTime::TimeZone" => (
-    from "Str",
-    via { DateTime::TimeZone->new( name => $_ ) },
-);
+for my $type ( "DateTime", DateTime ) {
+    coerce $type => (
+		from Num,
+		via { 'DateTime'->from_epoch( epoch => $_ ) },
+		from HashRef,
+		via { 'DateTime'->new( %$_ ) },
+		Moose::Meta::TypeConstraint->new(
+			name => "__ANON__",
+			parent => find_type_constraint("Str"),
+			constraint => sub { $_ eq 'now' },
+			optimise_as => sub { no warnings 'uninitialized'; !ref($_[0]) and $_[0] eq 'now' },
+		),
+		via { 'DateTime'->now },
+	);
+}
+
+for my $type ( "DateTime::Duration", Duration ) {
+	coerce $type => (
+		from Num,
+		via { DateTime::Duration->new( seconds => $_ ) },
+		from HashRef,
+		via { DateTime::Duration->new( %$_ ) },
+	);
+}
+
+for my $type ( "DateTime::TimeZone", TimeZone ) {
+	coerce $type => (
+		from Str,
+		via { DateTime::TimeZone->new( name => $_ ) },
+	);
+
+}
 
 coerce "DateTime::Locale" => (
     from Moose::Util::TypeConstraints::find_or_create_isa_type_constraint("Locale::Maketext"),
     via { DateTime::Locale->load($_->language_tag) },
-    from "Str",
+    from Str,
     via { DateTime::Locale->load($_) },
 );
 
@@ -64,10 +78,24 @@ Moose
 
 =head1 SYNOPSIS
 
+Export Example:
+
+	use MooseX::Types::DateTime qw(TimeZone);
+
+    has time_zone => (
+        isa => TimeZone,
+        is => "rw",
+        coerce => 1,
+    );
+
+    Class->new( time_zone => "Africa/Timbuktu" );
+
+Namespaced Example:
+
 	use MooseX::Types::DateTime;
 
     has time_zone => (
-        isa => "DateTime::TimeZone",
+        isa => 'DateTime::TimeZone',
         is => "rw",
         coerce => 1,
     );
@@ -100,7 +128,7 @@ Calls L<DateTime/new> with the hash entries as arguments.
 
 =back
 
-=item L<DateTime::Duration>
+=item L<Duration>
 
 A class type for L<DateTime::Duration>
 

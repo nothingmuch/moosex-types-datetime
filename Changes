@@ -4,3 +4,6 @@ Revision history for DBIx-Class-PopulateMore
         First version, released on an unsuspecting world.
 0.02    25 May 2008
         Created the MooseX::Types::DateTimeX namespace for extensions.
+0.03    02 June 2008
+        -- Changed MooseX::Types::Datetime to use MooseX::Types.
+		-- Added Duration coercion for MooseX::Types::DateTimeX

@@ -19,6 +19,7 @@ WriteMakefile(
         'Test::Exception'    => 0,
 		'MooseX::Types'      => '0.04',
 		'DateTimeX::Easy'    => '0.082',
+		'Time::Duration::Parse' => '0.06',
     },
 );
 

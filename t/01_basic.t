@@ -129,3 +129,22 @@ isa_ok( find_type_constraint($_), "Moose::Meta::TypeConstraint" ) for qw(DateTim
         isa_ok( Gorch->new( loc => $handle )->loc, "DateTime::Locale::ja", "coerced from maketext" );;
     }
 }
+
+{
+	{
+		package Gondor;
+		
+		use Moose;
+		use MooseX::Types::DateTime qw(DateTime Duration);
+	
+		has 'date' => (is=>'rw', isa=>DateTime, coerce=>1);
+		has 'duration' => (is=>'rw', isa=>Duration, coerce=>1);	
+		
+	}
+	
+	my $epoch = time;
+	
+	ok my $gondor = Gondor->new(date=>$epoch, duration=>10)
+	=> 'Instantiated object using export types';
+	
+}
