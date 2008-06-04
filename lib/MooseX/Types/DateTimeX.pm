@@ -65,10 +65,7 @@ subtype DateTime,
   as 'DateTime'; ## From MooseX::Types::DateTime
 
 coerce DateTime,
-  from Num,
-  via { 'DateTime'->from_epoch( epoch => $_ ) },
-  from HashRef,
-  via { 'DateTime'->new( %$_ ) },
+  @{find_type_constraint('DateTime')->coercion->type_coercion_map},
   from Str,
   via { DateTimeX::Easy->new($_, default_time_zone=>'UTC') };
 
@@ -84,10 +81,7 @@ subtype Duration,
   as 'DateTime::Duration'; ## From MooseX::Types::Duration
 
 coerce Duration,
-  from Num,
-  via { DateTime::Duration->new( seconds => $_ ) },
-  from HashRef,
-  via { DateTime::Duration->new( %$_ ) },
+  @{find_type_constraint('DateTime::Duration')->coercion->type_coercion_map},
   from Str,
   via { 
 	DateTime::Duration->new( 
