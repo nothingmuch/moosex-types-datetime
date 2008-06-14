@@ -3,9 +3,6 @@ package MooseX::Types::DateTimeX;
 use strict;
 use warnings;
 
-our $VERSION = "0.03";
-our $AUTHORITY = 'cpan:JJNAPIORK';
-
 use DateTime;
 use DateTime::Duration;
 use DateTimeX::Easy; 
