@@ -57,8 +57,7 @@ possible.  Feedback welcomed!
 
 =cut
 
-subtype DateTime,
-  as 'DateTime'; ## From MooseX::Types::DateTime
+subtype DateTime, as MooseX::Types::DateTime::DateTime;
 
 coerce DateTime,
   @{find_type_constraint('DateTime')->coercion->type_coercion_map},
@@ -73,8 +72,7 @@ L<Time::Duration::Parse> to attempt this.
 
 =cut
 
-subtype Duration,
-  as 'DateTime::Duration'; ## From MooseX::Types::Duration
+subtype Duration, as MooseX::Types::DateTime::Duration;
 
 coerce Duration,
   @{find_type_constraint('DateTime::Duration')->coercion->type_coercion_map},
