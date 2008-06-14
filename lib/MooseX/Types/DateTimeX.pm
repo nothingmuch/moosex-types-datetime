@@ -59,10 +59,10 @@ possible.  Feedback welcomed!
 
 subtype DateTime, as MooseX::Types::DateTime::DateTime;
 
-coerce DateTime,
-  @{find_type_constraint('DateTime')->coercion->type_coercion_map},
-  from Str,
-  via { DateTimeX::Easy->new($_, default_time_zone=>'UTC') };
+coerce( DateTime,
+    @{ $MooseX::Types::DateTime::coercions{DateTime} },
+    from Str, via { DateTimeX::Easy->new($_, default_time_zone => 'UTC') },
+);
 
 
 =head2 Duration
@@ -74,14 +74,14 @@ L<Time::Duration::Parse> to attempt this.
 
 subtype Duration, as MooseX::Types::DateTime::Duration;
 
-coerce Duration,
-  @{find_type_constraint('DateTime::Duration')->coercion->type_coercion_map},
-  from Str,
-  via { 
-	DateTime::Duration->new( 
-		seconds => Time::Duration::Parse::parse_duration($_)
-	)}; 
- 
+coerce( Duration,
+    @{ $MooseX::Types::DateTime::coercions{"DateTime::Duration"} },
+    from Str, via { 
+        DateTime::Duration->new( 
+            seconds => Time::Duration::Parse::parse_duration($_)
+        );
+    },
+);
 
 =head1 AUTHOR
 
