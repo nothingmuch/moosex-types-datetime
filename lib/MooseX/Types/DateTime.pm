@@ -33,45 +33,41 @@ subtype( Now,
     },
 );
 
+our %coercions = (
+    DateTime => [
+		from Num, via { 'DateTime'->from_epoch( epoch => $_ ) },
+		from HashRef, via { 'DateTime'->new( %$_ ) },
+		from Now, via { 'DateTime'->now },
+    ],
+    "DateTime::Duration" => [
+		from Num, via { DateTime::Duration->new( seconds => $_ ) },
+		from HashRef, via { DateTime::Duration->new( %$_ ) },
+    ],
+    "DateTime::TimeZone" => [
+		from Str, via { DateTime::TimeZone->new( name => $_ ) },
+    ],
+    "DateTime::Locale" => [
+        from Moose::Util::TypeConstraints::find_or_create_isa_type_constraint("Locale::Maketext"),
+        via { DateTime::Locale->load($_->language_tag) },
+        from Str, via { DateTime::Locale->load($_) },
+    ],
+);
+
 for my $type ( "DateTime", DateTime ) {
-    coerce $type => (
-		from Num,
-		via { 'DateTime'->from_epoch( epoch => $_ ) },
-		from HashRef,
-		via { 'DateTime'->new( %$_ ) },
-		Moose::Meta::TypeConstraint->new(
-			name => "__ANON__",
-			parent => find_type_constraint("Str"),
-			constraint => sub { $_ eq 'now' },
-			optimise_as => sub { no warnings 'uninitialized'; !ref($_[0]) and $_[0] eq 'now' },
-		),
-		via { 'DateTime'->now },
-	);
+    coerce $type => @{ $coercions{DateTime} };
 }
 
 for my $type ( "DateTime::Duration", Duration ) {
-	coerce $type => (
-		from Num,
-		via { DateTime::Duration->new( seconds => $_ ) },
-		from HashRef,
-		via { DateTime::Duration->new( %$_ ) },
-	);
+    coerce $type => @{ $coercions{"DateTime::Duration"} };
 }
 
 for my $type ( "DateTime::TimeZone", TimeZone ) {
-	coerce $type => (
-		from Str,
-		via { DateTime::TimeZone->new( name => $_ ) },
-	);
-
+	coerce $type => @{ $coercions{"DateTime::TimeZone"} };
 }
 
-coerce "DateTime::Locale" => (
-    from Moose::Util::TypeConstraints::find_or_create_isa_type_constraint("Locale::Maketext"),
-    via { DateTime::Locale->load($_->language_tag) },
-    from Str,
-    via { DateTime::Locale->load($_) },
-);
+for my $type ( "DateTime::Locale", Locale ) {
+	coerce $type => @{ $coercions{"DateTime::Locale"} };
+}
 
 __PACKAGE__
 
