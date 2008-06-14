@@ -11,28 +11,27 @@ use MooseX::Types::DateTime ();
 use MooseX::Types::Moose qw/Num HashRef Str/;
 use MooseX::Types -declare => [qw( DateTime Duration)];
 
-  
 =head1 NAME
 
 MooseX::Types::DateTimeX - Extensions to L<MooseX::Types::DateTime>
 
 =head1 SYNOPSIS
 
-	package MyApp::MyClass;
-	
+    package MyApp::MyClass;
+
     use MooseX::Types::DateTimeX qw( DateTime );
-	
+
     has created => (
         isa => DateTime,
         is => "rw",
         coerce => 1,
     );
-	
-	my $instance = MyApp::MyClass->new(created=>'January 1, 1980');
-	print $instance->created->year; # is 1980
-	
-	## Coercions from the base type continue to work as normal.
-	my $instance = MyApp::MyClass->new(created=>{year=>2000,month=>1,day=>10});
+
+    my $instance = MyApp::MyClass->new(created=>'January 1, 1980');
+    print $instance->created->year; # is 1980
+
+    ## Coercions from the base type continue to work as normal.
+    my $instance = MyApp::MyClass->new(created=>{year=>2000,month=>1,day=>10});
 
 Please see the test case for more example usage.
 
@@ -92,10 +91,10 @@ John Napiorkowski E<lt>jjn1056 at yahoo.comE<gt>
 
 =head1 LICENSE
 
-	Copyright (c) 2008 John Napiorkowski.
-	
-	This program is free software; you can redistribute
-	it and/or modify it under the same terms as Perl itself.
+    Copyright (c) 2008 John Napiorkowski.
+
+    This program is free software; you can redistribute
+    it and/or modify it under the same terms as Perl itself.
 
 =cut
 
