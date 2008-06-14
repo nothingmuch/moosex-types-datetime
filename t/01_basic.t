@@ -109,7 +109,7 @@ isa_ok( find_type_constraint($_), "Moose::Meta::TypeConstraint" ) for qw(DateTim
 
     SKIP: {
         skip "No Locale::Maketext", 2 unless eval { require Locale::Maketext };
-        
+
         {
             package Some::L10N;
             our @ISA = qw(Locale::Maketext);
@@ -131,20 +131,20 @@ isa_ok( find_type_constraint($_), "Moose::Meta::TypeConstraint" ) for qw(DateTim
 }
 
 {
-	{
-		package Gondor;
-		
-		use Moose;
-		use MooseX::Types::DateTime qw(DateTime Duration);
-	
-		has 'date' => (is=>'rw', isa=>DateTime, coerce=>1);
-		has 'duration' => (is=>'rw', isa=>Duration, coerce=>1);	
-		
-	}
-	
-	my $epoch = time;
-	
-	ok my $gondor = Gondor->new(date=>$epoch, duration=>10)
-	=> 'Instantiated object using export types';
-	
+    {
+        package Gondor;
+
+        use Moose;
+        use MooseX::Types::DateTime qw(DateTime Duration);
+
+        has 'date' => (is=>'rw', isa=>DateTime, coerce=>1);
+        has 'duration' => (is=>'rw', isa=>Duration, coerce=>1);	
+
+    }
+
+    my $epoch = time;
+
+    ok my $gondor = Gondor->new(date=>$epoch, duration=>10)
+    => 'Instantiated object using export types';
+
 }
