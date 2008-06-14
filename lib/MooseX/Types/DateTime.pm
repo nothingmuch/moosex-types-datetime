@@ -12,8 +12,7 @@ use DateTime::Locale ();
 use DateTime::TimeZone ();
 
 use MooseX::Types::Moose qw/Num HashRef Str/;
-use MooseX::Types
-    -declare => [qw( DateTime Duration TimeZone )];
+use MooseX::Types -declare => [qw( DateTime Duration TimeZone Locale Now )];
 
 class_type "DateTime";
 class_type "DateTime::Duration";
@@ -23,7 +22,16 @@ class_type "DateTime::Locale::root" => { name => "DateTime::Locale" };
 subtype DateTime, as 'DateTime';
 subtype Duration, as 'DateTime::Duration';
 subtype TimeZone, as 'DateTime::TimeZone';
+subtype Locale,   as 'DateTime::Locale';
 
+subtype( Now,
+    as Str,
+    where { $_ eq 'now' },
+    Moose::Util::TypeConstraints::optimize_as {
+        no warnings 'uninitialized';
+        !ref($_[0]) and $_[0] eq 'now';
+    },
+);
 
 for my $type ( "DateTime", DateTime ) {
     coerce $type => (
