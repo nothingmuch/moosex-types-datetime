@@ -53,8 +53,8 @@ parse some dates and make sure the system can actually find something.
 ok $class->date('2/13/1969 noon')
 => "coerced a DateTime from '2/13/1969 noon'";
 
-	is $class->date, '1969-02-13T12:00:00'
-	=> 'got correct date';
+is $class->date, '1969-02-13T12:00:00'
+=> 'got correct date';
 
 ok $class->date('2/13/1969')
 => "coerced a DateTime from '2/13/1969'";
