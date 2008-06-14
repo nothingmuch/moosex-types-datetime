@@ -7,7 +7,7 @@ use DateTime;
 use DateTime::Duration;
 use DateTimeX::Easy; 
 use Time::Duration::Parse ();
-use MooseX::Types::DateTime;  
+use MooseX::Types::DateTime ();
 use MooseX::Types::Moose qw/Num HashRef Str/;
 use MooseX::Types -declare => [qw( DateTime Duration)];
 
