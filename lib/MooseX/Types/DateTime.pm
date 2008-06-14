@@ -183,6 +183,12 @@ Delegates to L<DateTime::TimeZone/new> with the string as the C<name> argument.
 
 =back
 
+=head1 SEE ALSO
+
+L<MooseX::Types::DateTimeX>
+
+L<DateTime>, L<DateTimeX::Easy>
+
 =head1 VERSION CONTROL
 
 L<http://code2.0beta.co.uk/moose/svn/MooseX-Types-DateTime/trunk>. Ask on
@@ -191,6 +197,8 @@ L<http://code2.0beta.co.uk/moose/svn/MooseX-Types-DateTime/trunk>. Ask on
 =head1 AUTHOR
 
 Yuval Kogman E<lt>nothingmuch@woobling.orgE<gt>
+
+John Napiorkowski E<lt>jjn1056 at yahoo.comE<gt>
 
 =head1 COPYRIGHT
 
