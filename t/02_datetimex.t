@@ -1,14 +1,17 @@
 use strict;
 use warnings;
 
-BEGIN {
+use Test::More;
 
-	use Test::More tests => 30;
-	use Test::Exception;
-	use DateTime;
-	
-	use_ok 'MooseX::Types::DateTimeX';
+BEGIN {
+    plan skip_all => "DateTime::Format::DateManip required" unless eval { require DateTime::Format::DateManip };
+    plan tests => 30;
 }
+
+use Test::Exception;
+use DateTime;
+
+use ok 'MooseX::Types::DateTimeX';
 
 =head1 NAME
 
@@ -50,33 +53,30 @@ parse some dates and make sure the system can actually find something.
 
 =cut
 
-ok $class->date('2/13/1969 noon')
-=> "coerced a DateTime from '2/13/1969 noon'";
+sub coerce_ok ($;$) {
+    my ( $date, $canon ) = @_;
 
-is $class->date, '1969-02-13T12:00:00'
-=> 'got correct date';
+    SKIP: {
+        skip "DateTimeX::Easy couldn't parse '$date'", $canon ? 2 : 1 unless DateTimeX::Easy->new($date);
+        ok( $class->date($date), "coerced a DateTime from '$date'" );
+        is( $class->date, $canon, 'got correct date' ) if $canon;
+    }
+}
 
-ok $class->date('2/13/1969')
-=> "coerced a DateTime from '2/13/1969'";
+coerce_ok ('2/13/1969 noon', '1969-02-13T12:00:00' );
 
-	is $class->date, '1969-02-13T00:00:00'
-	=> 'got correct date';
 
-ok $class->date('2/13/1969 America/New_York')
-=> "coerced a DateTime from '2/13/1969 America/New_York'";
+coerce_ok( '2/13/1969', '1969-02-13T00:00:00' );
 
-	isa_ok $class->date->time_zone => 'DateTime::TimeZone::America::New_York'
+coerce_ok( '2/13/1969 America/New_York', '1969-02-13T00:00:00' );
+
+SKIP: {
+    skip "couldn't parse", 1 unless $class->date;
+    isa_ok $class->date->time_zone => 'DateTime::TimeZone::America::New_York'
 	=> 'Got Correct America/New_York TimeZone';
+}
 
-	is $class->date, '1969-02-13T00:00:00'
-	=> 'got correct date';
-
-ok $class->date('jan 1 2006')
-=>"coerced a DateTime from 'jan 1 2006'";
-
-	is $class->date, '2006-01-01T00:00:00'
-	=> 'got correct date';
-	
+coerce_ok( 'jan 1 2006', '2006-01-01T00:00:00' );
 
 =head2 relative dates
 
@@ -86,20 +86,13 @@ they work well enough, given the inherent ambiguity we are dealing with.
 
 =cut
 
-ok $class->date('now')
-=> "coerced a DateTime from 'now'";
+coerce_ok("now");
 
-ok $class->date('yesterday')
-=> "coerced a DateTime from 'yesterday'";
+coerce_ok("yesterday");
 
+coerce_ok("tomorrow");
 
-ok $class->date('tomorrow')
-=> "coerced a DateTime from 'tomorrow'";
-
-
-ok $class->date('last week')
-=> "coerced a DateTime from 'last week'";
-
+coerce_ok("last week");
 
 =head2 check inherited constraints
 
