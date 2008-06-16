@@ -6,9 +6,12 @@ use warnings;
 use DateTime;
 use DateTime::Duration;
 use DateTimeX::Easy; 
-use Time::Duration::Parse ();
+use Time::Duration::Parse qw(parse_duration);
 use MooseX::Types::DateTime ();
 use MooseX::Types::Moose qw/Num HashRef Str/;
+
+use namespace::clean;
+
 use MooseX::Types -declare => [qw( DateTime Duration)];
 
 =head1 NAME
@@ -78,7 +81,7 @@ coerce( Duration,
     @{ $MooseX::Types::DateTime::coercions{"DateTime::Duration"} },
     from Str, via { 
         DateTime::Duration->new( 
-            seconds => Time::Duration::Parse::parse_duration($_)
+            seconds => parse_duration($_)
         );
     },
 );

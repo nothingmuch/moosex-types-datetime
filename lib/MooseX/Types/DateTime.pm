@@ -12,6 +12,9 @@ use DateTime::Locale ();
 use DateTime::TimeZone ();
 
 use MooseX::Types::Moose qw/Num HashRef Str/;
+
+use namespace::clean;
+
 use MooseX::Types -declare => [qw( DateTime Duration TimeZone Locale Now )];
 
 class_type "DateTime";
