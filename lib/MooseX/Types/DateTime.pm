@@ -5,7 +5,7 @@ package MooseX::Types::DateTime;
 use strict;
 use warnings;
 
-our $VERSION = "0.01";
+our $VERSION = "0.02";
 
 use DateTime ();
 use DateTime::Locale ();
