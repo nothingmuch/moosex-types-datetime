@@ -55,6 +55,7 @@ parse some dates and make sure the system can actually find something.
 
 sub coerce_ok ($;$) {
     my ( $date, $canon ) = @_;
+    local $Test::Builder::Level = $Test::Builder::Level + 1;
 
     SKIP: {
         skip "DateTimeX::Easy couldn't parse '$date'", $canon ? 2 : 1 unless DateTimeX::Easy->new($date);
