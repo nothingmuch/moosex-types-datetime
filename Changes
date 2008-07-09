@@ -1,3 +1,6 @@
+0.03
+        - more explicit versions for dependencies
+		- removed a test that doesn't seem to cleanly pass in all timezones
 0.02
         - Use namespace::clean in some places
         - Try to skip out of the test suite gracefully when bad crap happens

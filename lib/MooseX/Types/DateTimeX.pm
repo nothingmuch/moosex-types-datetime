@@ -64,7 +64,7 @@ subtype DateTime, as MooseX::Types::DateTime::DateTime;
 
 coerce( DateTime,
     @{ $MooseX::Types::DateTime::coercions{DateTime} },
-    from Str, via { DateTimeX::Easy->new($_, default_time_zone => 'UTC') },
+    from Str, via { DateTimeX::Easy->new($_) },
 );
 
 
