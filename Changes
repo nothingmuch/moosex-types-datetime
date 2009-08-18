@@ -1,6 +1,11 @@
+0.04
+        - Depend on DateTime::TimeZone 0.95 to avoid test failures due to
+          broken, older versions.
+
 0.03
         - more explicit versions for dependencies
 		- removed a test that doesn't seem to cleanly pass in all timezones
+
 0.02
         - Use namespace::clean in some places
         - Try to skip out of the test suite gracefully when bad crap happens
