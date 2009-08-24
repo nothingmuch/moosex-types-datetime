@@ -1,3 +1,6 @@
+0.04
+        - Remove DateTimeX::Easy support, this is in its own distribution now
+
 0.03
         - more explicit versions for dependencies
 		- removed a test that doesn't seem to cleanly pass in all timezones
