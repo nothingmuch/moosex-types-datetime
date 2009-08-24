@@ -1,9 +1,17 @@
-0.04
+0.05
+		- Merged the two 0.04 releases
+
+0.04 (NUFFIN)
         - Remove DateTimeX::Easy support, this is in its own distribution now
+
+0.04 (FLORA)
+        - Depend on DateTime::TimeZone 0.95 to avoid test failures due to
+          broken, older versions.
 
 0.03
         - more explicit versions for dependencies
 		- removed a test that doesn't seem to cleanly pass in all timezones
+
 0.02
         - Use namespace::clean in some places
         - Try to skip out of the test suite gracefully when bad crap happens

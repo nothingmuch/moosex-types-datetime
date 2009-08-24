@@ -14,7 +14,7 @@ WriteMakefile(
         'Moose'              => '0.41', # class_type
         'DateTime'           => '0.4302',
         'DateTime::Locale'   => '0.4001',
-        'DateTime::TimeZone' => '0.7701',
+        'DateTime::TimeZone' => '0.95',
         'Test::use::ok'      => '0.02',
         'Test::Exception'    => '0.27',
         'namespace::clean'   => '0.08',
